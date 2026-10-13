@@ -1,23 +1,43 @@
-name: Build My Website APK
+name: Generate Play Store AAB
+
 on:
-  workflow_dispatch: # Isse aap manually button daba kar app bana sakte hain
+  workflow_dispatch: # Isse aap manually click karke app bana sakte hain
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Website to APK Convert
-        uses: darkshredder/web-to-app-action@main
+      - name: Setup Java Development Kit (JDK)
+        uses: actions/setup-java@v4
         with:
-          build-folder-path: "."       # Humne root folder me hi index.html banayi hai
-          app-name: "Digital Gondia"  # Yahan apne app ka naam badlein
-          output-folder-path: "my-apks"
+          distribution: 'zulu'
+          java-version: '17'
 
-      - name: Download Link Generator
-        uses: actions/upload-artifact@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create Flutter/Cordova Free Webview App
+        run: |
+          sudo npm install -g cordova
+          cordova create myapp com.blogspot.app "My Blogspot App"
+          cd myapp
+          cordova platform add android
+          
+          # HTML custom configuration for Blogspot redirect
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://digitalgondia.blogspot.com/"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
+          
+          # Enable AAB build mode in cordova settings
+          echo 'android { bundleInRelease = true }' >> platforms/android/app/build.gradle
+          
+          # Build Release Android App Bundle (.aab)
+          cordova build android --release -- --bundle
+
+      - name: Upload Play Store AAB Artifact
+        uses: actions/upload-artifact@v4  # FIXED: Updated from v3 to v4
         with:
-          name: Final-Android-APK
-          path: my-apks/
+          name: PlayStore-Release-AAB
+          path: myapp/platforms/android/app/build/outputs/bundle/release/app-release.aab
