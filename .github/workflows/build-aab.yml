@@ -1,7 +1,7 @@
 name: Generate Play Store AAB
 
 on:
-  workflow_dispatch: # Isse aap manually click karke app bana sakte hain
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,20 +17,24 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          # Automatically accept all Google Android licenses
+          yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          yes | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses || true
 
-      - name: Create Flutter/Cordova Free Webview App
+      - name: Install Cordova and Build AAB
         run: |
           sudo npm install -g cordova
-          cordova create myapp com.digitalgondia.app "Digital Gondia"
+          cordova create myapp com.blogspot.app "My Blogspot App"
           cd myapp
           cordova platform add android
           
           # HTML custom configuration for Blogspot redirect
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://digitalgondia.blogspot.com"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
+          # ⚠️ APNI WEBSITE KA LINK Niche 'https://blogspot.com' KI JAGAH DALEIN
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://digitalgondia.blogspot.com/"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
           
-          # Enable AAB build mode in cordova settings
+          # Enable AAB bundle build instead of APK
           echo 'android { bundleInRelease = true }' >> platforms/android/app/build.gradle
           
           # Build Release Android App Bundle (.aab)
