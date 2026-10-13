@@ -19,7 +19,6 @@ jobs:
 
       - name: Accept Android SDK Licenses
         run: |
-          # Automatically accept all Google Android licenses
           yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --licenses || true
           yes | ${ANDROID_HOME}/tools/bin/sdkmanager --licenses || true
 
@@ -34,10 +33,7 @@ jobs:
           # ⚠️ APNI WEBSITE KA LINK Niche 'https://blogspot.com' KI JAGAH DALEIN
           echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://digitalgondia.blogspot.com/"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
           
-          # Enable AAB bundle build instead of APK
-          echo 'android { bundleInRelease = true }' >> platforms/android/app/build.gradle
-          
-          # Build Release Android App Bundle (.aab)
+          # Build Release Android App Bundle (.aab) direct command se
           cordova build android --release -- --bundle
 
       - name: Upload Play Store AAB Artifact
