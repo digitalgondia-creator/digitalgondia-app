@@ -1,0 +1,23 @@
+name: Build My Website APK
+on:
+  workflow_dispatch: # Isse aap manually button daba kar app bana sakte hain
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Website to APK Convert
+        uses: darkshredder/web-to-app-action@main
+        with:
+          build-folder-path: "."       # Humne root folder me hi index.html banayi hai
+          app-name: "Digital Gondia"  # Yahan apne app ka naam badlein
+          output-folder-path: "my-apks"
+
+      - name: Download Link Generator
+        uses: actions/upload-artifact@v3
+        with:
+          name: Final-Android-APK
+          path: my-apks/
