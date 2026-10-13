@@ -23,12 +23,12 @@ jobs:
       - name: Create Flutter/Cordova Free Webview App
         run: |
           sudo npm install -g cordova
-          cordova create myapp com.blogspot.app "My Blogspot App"
+          cordova create myapp com.digitalgondia.app "Digital Gondia"
           cd myapp
           cordova platform add android
           
           # HTML custom configuration for Blogspot redirect
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://blogspot.com"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0; url=https://digitalgondia.blogspot.com"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Blog</title></head><body></body></html>' > www/index.html
           
           # Enable AAB build mode in cordova settings
           echo 'android { bundleInRelease = true }' >> platforms/android/app/build.gradle
